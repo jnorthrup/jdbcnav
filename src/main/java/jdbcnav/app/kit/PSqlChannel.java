@@ -16,7 +16,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.*;
-import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -78,17 +77,22 @@ public final class PSqlChannel {
     private static Connection sshConnection;
 
      static Process process;
-    static private final String HTML_PROMPT_MSG = "<html>" + "<img src='http://app.com/podcaster/jdbcnav.app.dws.images/img_demo.gif'>" + "<p>Please Enter<blink> SSH </blink>Username.\n";
+  static private final String HTML_PROMPT_MSG = "<html>" + "<img src='http://app.com/podcaster/jdbcnav.app.dws.images/img_demo.gif'>" + "<p>Please Enter<blink> SSH </blink>Username.\n";
+  public static final String USER = System.getProperty("user.name", System.getenv("USER"));
+    public static final String PASSWORD = System.getProperty("user.password", System.getenv("PASSWORD"));
+    public static final String DBUSER = System.getProperty("db.user", System.getenv("DBUSER"));
+    public static final String DBPASSWORD = System.getProperty("db.password", System.getenv("DBPASSWORD"));
 
 
-    private static Pair<String, String> getAuthInfo() {
+  private static Pair<String, String> getAuthInfo() {
         final ButtonGroup group = new ButtonGroup();
 
         Pair<String, String> stuff;
 
         System.out.println(System.getProperties());
         JLabel nameLabel = new JLabel(HTML_PROMPT_MSG);
-        JTextField nameField = new JTextField(System.getProperty("user.name", System.getenv("USER")));
+    String user = USER;
+    JTextField nameField = new JTextField(user);
 //Group the radio buttons.
         JToolBar bbar = new JToolBar();
         bbar.setOrientation(JToolBar.VERTICAL);
@@ -119,7 +123,9 @@ public final class PSqlChannel {
 
 //      setSqlConnection(JdbcNav.getDriver().connect(getDburi(), new Properties()));
       Driver.main(new String[0]);
-      setSqlConnection (DriverManager.getConnection(getDburi() + "/", "dba","dba"));
+      String dbuser = DBUSER;
+      String dbpassword = DBPASSWORD;
+      setSqlConnection(DriverManager.getConnection(getDburi() + "/", dbuser, dbpassword));
       sqlConnection.setReadOnly(true);
 
         return sqlConnection;
