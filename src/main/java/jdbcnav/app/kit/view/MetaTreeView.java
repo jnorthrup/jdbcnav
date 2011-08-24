@@ -1,63 +1,85 @@
 package jdbcnav.app.kit.view;
 
-import jdbcnav.app.kit.JdbcNav;
-import jdbcnav.app.kit.PSqlChannel;
-
-import javax.swing.*;
+import javax.swing.JDesktopPane;
+import javax.swing.JInternalFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreeSelectionModel;
-import java.awt.*;
+import java.awt.Rectangle;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+
+import jdbcnav.app.kit.JdbcNav;
+import jdbcnav.app.kit.PSqlChannel;
 
 /**
  * (c) Copyright 2006  Glamdring Incorporated Enterprises, Inc.  All rights reserved.
-
  */
 public class MetaTreeView {
-    public static void createInstanceView(JInternalFrame iframe, final JDesktopPane desktop) throws PropertyVetoException, IOException, InterruptedException {
-        desktop.add(iframe);
+  public static void createInstanceView(JInternalFrame iframe, final JDesktopPane desktop) throws PropertyVetoException, IOException, InterruptedException {
+    desktop.add(iframe);
 
-        final JTree tree = new JTree();
+    final JTree tree = new JTree();
 
-        JdbcNav.prepIFrame(iframe, "InstanceView", new JScrollPane(tree), new Rectangle(0, 0, 200, desktop.getHeight()));
-        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Dashboard");
-        DefaultTreeModel defaultTreeModel = new DefaultTreeModel(rootNode);
-        tree.setModel(defaultTreeModel);
+    JdbcNav.prepIFrame(iframe, "InstanceView", new JScrollPane(tree), new Rectangle(0, 0, 200, desktop.getHeight()));
+    DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Dashboard");
+    DefaultTreeModel defaultTreeModel = new DefaultTreeModel(rootNode);
+    tree.setModel(defaultTreeModel);
 
-        try {
+    try {
 
-            DatabaseMetaData metaData;
-            {
-                metaData = PSqlChannel.getSqlConnection().getMetaData();
-            }
-            ResultSet tables = metaData.getTables(null, null, null,/* new String[]{"TABLE"}*/null);
+      DatabaseMetaData metaData;
+      {
+        metaData = PSqlChannel.getSqlConnection().getMetaData();
+      }
+      ResultSet tables = metaData.getTables(null, null, null,/* new String[]{"TABLE"}*/null);
+      ResultSetMetaData metaData1 = tables.getMetaData();
+//          XStream xStream = new XStream();
+//          String s = xStream.toXML(metaData1);
+//          System.err.println("md columns: "+s);
+      for (int ci = 1; ci < metaData1.getColumnCount() + 1; ci++) {
 
-            while (tables.next()) {
-                String nm = tables.getString("TABLE_NAME");
-                rootNode.add(new DefaultMutableTreeNode(nm));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (0 != ci) System.err.print("\t");
+        System.err.print(metaData1.getColumnName(ci));
+
+      }
+      System.err.println("");
+      while (tables.next()) {
+
+        String nm = tables.getString("TABLE_NAME");
+        for (int ci = 1; ci < metaData1.getColumnCount() + 1; ci++) {
+
+          if (0 != ci) System.err.print("\t");
+          System.err.print(tables.getString(ci));
+
         }
-        //Where the tree is initialized:
-        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+        System.err.println("");
 
-        //Listen for when the selection changes.
-        tree.addTreeSelectionListener(new TreeSelectionListener() {
-            public void valueChanged(TreeSelectionEvent treeSelectionEvent) {
-                TreeNode lastSelectedPathComponent = (TreeNode) tree.getLastSelectedPathComponent();
-
-                if (tree.getModel().getRoot() != lastSelectedPathComponent)
-                    TablePopupView.createTablePopupView(lastSelectedPathComponent.toString(), desktop, true);
-            }
-        });
+        rootNode.add(new DefaultMutableTreeNode(nm));
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
+    //Where the tree is initialized:
+    tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+
+    //Listen for when the selection changes.
+    tree.addTreeSelectionListener(new TreeSelectionListener() {
+      public void valueChanged(TreeSelectionEvent treeSelectionEvent) {
+        TreeNode lastSelectedPathComponent = (TreeNode) tree.getLastSelectedPathComponent();
+
+        if (tree.getModel().getRoot() != lastSelectedPathComponent)
+          TablePopupView.createTablePopupView(lastSelectedPathComponent.toString(), desktop, true);
+      }
+    });
+  }
 }
