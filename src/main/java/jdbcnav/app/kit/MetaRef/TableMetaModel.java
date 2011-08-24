@@ -3,6 +3,7 @@ package jdbcnav.app.kit.MetaRef;
 import static jdbcnav.app.kit.PSqlChannel.getSqlConnection;
 import static jdbcnav.app.kit.PSqlChannel.guardConnection;
 import jdbcnav.app.kit.MD_KEYS;
+import jdbcnav.app.kit.PSqlChannel;
 
 import java.io.IOException;
 import java.sql.DatabaseMetaData;
@@ -35,8 +36,10 @@ public class TableMetaModel {
         try {
             guardConnection();
             final DatabaseMetaData metaData = getSqlConnection().getMetaData();
-            final ResultSet ik = metaData.getImportedKeys("public", null, tableName);
-            final ResultSet ob = metaData.getExportedKeys("public", null, null);
+
+
+          final ResultSet ik = metaData.getImportedKeys(null, null, tableName);
+            final ResultSet ob = metaData.getExportedKeys(null, null, null);
 
             while (ik.next()) {
                 EnumMap<MD_KEYS, String> attrMap = new EnumMap<MD_KEYS, String>(MD_KEYS.class);
