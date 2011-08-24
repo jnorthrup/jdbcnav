@@ -5,14 +5,10 @@ import jdbcnav.app.usecase.*;
 
 import javax.swing.*;
 import javax.swing.table.*;
-import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.*;
 import java.io.*;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.*;
 
@@ -37,7 +33,7 @@ public final class JdbcNav {
     public static void main(String[] arg) throws PropertyVetoException, IOException, InterruptedException, ClassNotFoundException, UnsupportedLookAndFeelException, IllegalAccessException, InstantiationException {
         args = arg;
 //        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-        initFrame();
+        initFrame(null, null);
         desktop.setDragMode(JDesktopPane.LIVE_DRAG_MODE);
     }
 
@@ -61,7 +57,7 @@ public final class JdbcNav {
     }
 
 
-    private static void initFrame() throws PropertyVetoException {
+    private static void initFrame(String dbcat, String dbuser) throws PropertyVetoException {
         frame = new JFrame();
         getFrame().setBounds(0, 0, 1024, 768);
         getFrame().setVisible(true);
@@ -96,7 +92,7 @@ public final class JdbcNav {
         getFrame().setMenuBar(jmb);
         new FormulaView(getDesktop());
         try {
-            MetaTreeView.createInstanceView(new JInternalFrame(), getDesktop());
+            MetaTreeView.createInstanceView(new JInternalFrame(), getDesktop(), dbcat, dbuser);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -131,11 +127,13 @@ public final class JdbcNav {
                 }
             }
         });
-        jfm.add(new AbstractAction("Tables") {
+        jfm.add(new AbstractAction("All Tables") {
             public void actionPerformed(ActionEvent actionEvent) {
                 JInternalFrame iframe = new JInternalFrame();
                 try {
-                    MetaTreeView.createInstanceView(iframe, desktop);
+                  String dbcat = null;
+                  String dbuser = null;
+                  MetaTreeView.createInstanceView(iframe, desktop, dbcat, dbuser);
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }

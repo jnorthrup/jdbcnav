@@ -25,7 +25,7 @@ import jdbcnav.app.kit.PSqlChannel;
  * (c) Copyright 2006  Glamdring Incorporated Enterprises, Inc.  All rights reserved.
  */
 public class MetaTreeView {
-  public static void createInstanceView(JInternalFrame iframe, final JDesktopPane desktop) throws PropertyVetoException, IOException, InterruptedException {
+  public static void createInstanceView(JInternalFrame iframe, final JDesktopPane desktop, String dbcat, String dbuser) throws PropertyVetoException, IOException, InterruptedException {
     desktop.add(iframe);
 
     final JTree tree = new JTree();
@@ -41,7 +41,7 @@ public class MetaTreeView {
       {
         metaData = PSqlChannel.getSqlConnection().getMetaData();
       }
-      ResultSet tables = metaData.getTables(null, null, null,/* new String[]{"TABLE"}*/null);
+      ResultSet tables = metaData.getTables(dbcat, dbuser, null,  new String[]{ "TABLE" });
       ResultSetMetaData metaData1 = tables.getMetaData();
 //          XStream xStream = new XStream();
 //          String s = xStream.toXML(metaData1);
