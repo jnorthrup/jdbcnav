@@ -18,8 +18,7 @@ import java.util.*;
 
 /**
  * (c) Copyright 2006  Glamdring Incorporated Enterprises, Inc.  All rights reserved.
-
- */
+  */
 public final class DataView {
     private String sql;
 
@@ -188,7 +187,5 @@ public final class DataView {
         return new DataView(rs, desktop, title);
     }
 
-    {
 
-    }
 }
