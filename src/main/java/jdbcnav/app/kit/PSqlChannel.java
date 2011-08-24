@@ -36,21 +36,13 @@ public final class PSqlChannel {
      * the default jdbc user string
      */
     private static final String JDBCNAV_PRODUCTION_USER_JDBCNAV = "/jdbcnav_production?user=app";
-    /**
-     * the default host of the tunnel entry host
-     */
-    private static final String BALBOA_JDBCNAV_COM = "balboa.app.com";
 
-    /**
-     * the actual final jdbc database hostname default
-     */
-    private static final String TRON = "tron.app.com";
-    private static boolean auth;
+  private static boolean auth;
 
     /**
      * defaulted Tunnel entry point
      */
-    private static String TUNNEL_HOSTNAME = BALBOA_JDBCNAV_COM;
+    private static String TUNNEL_HOSTNAME = "0.0.0.0";
     /**
      * the defaulted location url for JDBC
      */
@@ -67,7 +59,7 @@ public final class PSqlChannel {
     /**
      * the defaulted database hostname
      */
-    private static String END_HOSTNAME = TRON;
+    private static String END_HOSTNAME = "127.0.0.1";
     /**
      * this is the defaulted port for jdbc connections
      */
@@ -349,7 +341,7 @@ public final class PSqlChannel {
 
                     default:
                         JDBC_PORT = SQL_PORT;
-                        JDBC_HOST = TRON;
+                        JDBC_HOST = "tron.app.com";
                         break;
                 }
 
