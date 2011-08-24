@@ -31,7 +31,7 @@ public final class PSqlChannel {
     /**
      * the default jdbc driver string
      */
-    private static final String JDBC_POSTGRESQL_PREFIX = "jdbc:virtuoso://";
+    private static final String JDBC_DRIVER_PREFIX = "jdbc:virtuoso://";
     /**
      * the default jdbc user string
      */
@@ -58,7 +58,7 @@ public final class PSqlChannel {
     /**
      * the defaulted JDBC driver info
      */
-    private static String JDBC_PREFIX = JDBC_POSTGRESQL_PREFIX;
+    private static String JDBC_PREFIX = JDBC_DRIVER_PREFIX;
     /**
      * the defaulted jdbc connection local tunel point.
      */
@@ -126,6 +126,11 @@ public final class PSqlChannel {
       String dbuser = DBUSER;
       String dbpassword = DBPASSWORD;
       setSqlConnection(DriverManager.getConnection(getDburi() + "/", dbuser, dbpassword));
+      Statement statement = sqlConnection.createStatement();
+      boolean execute = statement.execute("USE "+dbuser);
+
+
+
       sqlConnection.setReadOnly(true);
 
         return sqlConnection;

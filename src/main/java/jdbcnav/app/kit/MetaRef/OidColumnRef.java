@@ -6,7 +6,7 @@ package jdbcnav.app.kit.MetaRef;
  */
 public final class OidColumnRef extends MdRefImpl {
     private final String table_name;
-    private static final String OID = "oid";
+    private static final String OID = "id";
 
     public OidColumnRef(String tableName) {
         this.table_name = tableName;

@@ -46,26 +46,7 @@ public class MetaTreeView {
 //          XStream xStream = new XStream();
 //          String s = xStream.toXML(metaData1);
 //          System.err.println("md columns: "+s);
-      for (int ci = 1; ci < metaData1.getColumnCount() + 1; ci++) {
-
-        if (0 != ci) System.err.print("\t");
-        System.err.print(metaData1.getColumnName(ci));
-
-      }
-      System.err.println("");
-      while (tables.next()) {
-
-        String nm = tables.getString("TABLE_NAME");
-        for (int ci = 1; ci < metaData1.getColumnCount() + 1; ci++) {
-
-          if (0 != ci) System.err.print("\t");
-          System.err.print(tables.getString(ci));
-
-        }
-        System.err.println("");
-
-        rootNode.add(new DefaultMutableTreeNode(nm));
-      }
+      render(rootNode, tables, metaData1);
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -81,5 +62,28 @@ public class MetaTreeView {
           TablePopupView.createTablePopupView(lastSelectedPathComponent.toString(), desktop, true);
       }
     });
+  }
+
+  private static void render(DefaultMutableTreeNode rootNode, ResultSet tables, ResultSetMetaData metaData1) throws SQLException {
+    for (int ci = 1; ci < metaData1.getColumnCount() + 1; ci++) {
+
+      if (0 != ci) System.err.print("\t");
+      System.err.print(metaData1.getColumnName(ci));
+
+    }
+    System.err.println("");
+    while (tables.next()) {
+
+      String nm = tables.getString("TABLE_NAME");
+      for (int ci = 1; ci < metaData1.getColumnCount() + 1; ci++) {
+
+        if (0 != ci) System.err.print("\t");
+        System.err.print(tables.getString(ci));
+
+      }
+      System.err.println("");
+
+      rootNode.add(new DefaultMutableTreeNode(nm));
+    }
   }
 }

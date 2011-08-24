@@ -3,11 +3,11 @@ package jdbcnav.app.kit.MetaRef;
 import static jdbcnav.app.kit.PSqlChannel.getSqlConnection;
 import static jdbcnav.app.kit.PSqlChannel.guardConnection;
 import jdbcnav.app.kit.MD_KEYS;
-import jdbcnav.app.kit.PSqlChannel;
 
 import java.io.IOException;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,12 +36,22 @@ public class TableMetaModel {
         try {
             guardConnection();
             final DatabaseMetaData metaData = getSqlConnection().getMetaData();
+            ResultSet ik = metaData.getImportedKeys(null, null, tableName);
+          dump(ik);
+          ik = metaData.getImportedKeys(null, null, tableName);//rewind
+          ResultSet ob = metaData.getExportedKeys(null, null, null);
 
+          dump(ob);
+          ob = metaData.getExportedKeys(null, null, null);              //rewind
 
-          final ResultSet ik = metaData.getImportedKeys(null, null, tableName);
-            final ResultSet ob = metaData.getExportedKeys(null, null, null);
+          ResultSet primaryKeys = metaData.getPrimaryKeys(null, null, tableName);
+          dump(primaryKeys);
+          ResultSet versionColumns = metaData.getVersionColumns(null, null, null);
+          dump(versionColumns);
+          ResultSet columns = metaData.getColumns(null, null, tableName, null);
+          dump(columns);
 
-            while (ik.next()) {
+          while (ik.next()) {
                 EnumMap<MD_KEYS, String> attrMap = new EnumMap<MD_KEYS, String>(MD_KEYS.class);
                 for (MD_KEYS MD : MD_KEYS.values())
                     attrMap.put(MD, ik.getString(MD.name()));
@@ -57,7 +67,7 @@ public class TableMetaModel {
             }
 
 
-            this.colResultSet = metaData.getColumns("public", null, tableName, null);
+            this.colResultSet = metaData.getColumns(null, null, tableName, null);
 
             if (oid)
                 metaDataRefs.add(new OidColumnRef(tableName));
@@ -107,4 +117,27 @@ public class TableMetaModel {
     public static TableMetaModel createTableMetaModel(String tableName, boolean oid) {
         return new TableMetaModel(tableName, oid);
     }
+ private static void dump(ResultSet tables) throws SQLException {
+   ResultSetMetaData metaData1 = tables.getMetaData();
+   for (int ci = 1; ci < metaData1.getColumnCount() + 1; ci++) {
+
+      if (0 != ci) System.err.print("\t");
+      System.err.print(metaData1.getColumnName(ci));
+
+    }
+    System.err.println("");
+    while (tables.next()) {
+
+
+      for (int ci = 1; ci < metaData1.getColumnCount() + 1; ci++) {
+
+        if (0 != ci) System.err.print("\t");
+        System.err.print(tables.getString(ci));
+
+      }
+      System.err.println("");
+
+
+    }
+  }
 }

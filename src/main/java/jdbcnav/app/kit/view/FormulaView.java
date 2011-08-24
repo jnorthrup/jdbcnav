@@ -282,7 +282,7 @@ public final class FormulaView {
                 if (!(s2len < FormulaColumn.as.ordinal())) {
                     String aclause = (String) s2[FormulaColumn.as.ordinal()];
                     if (aclause != null && aclause.trim().length() > 0)
-                        ret += " as " + '"' + aclause + '"';
+                        ret += " aS " + '"' + aclause + '"';
 
                 }
 
@@ -334,7 +334,7 @@ public final class FormulaView {
             query.append(createSELECT(cols)).append(createFROM(from)).append(createWHERE(wher)).append(createORDERBY(orby));
 
             if (previewCheckbox.isSelected()) {
-                query.append(" LIMIT 50 ");
+                query.append(" LIMiT 50 ");
 
             }
             String finalQuery = query.toString();
@@ -348,7 +348,7 @@ public final class FormulaView {
     private static String createORDERBY(Collection<String> orby) {
         String x = "";
         if (!orby.isEmpty()) {
-            x += " ORDER BY " +
+            x += " ORDEr bY " +
                     createClause(orby, ", ");
         }
         return x;
@@ -358,18 +358,18 @@ public final class FormulaView {
     private static String createWHERE(Collection<String> wher) {
         String x = "";
         if (!wher.isEmpty()) {
-            x += "  WHERE " +
-                    createClause(wher, " AND ");
+            x += "  WHeRE " +
+                    createClause(wher, " AnD ");
         }
         return x;
     }
 
     private static String createFROM(Iterable<String> from) {
-        return MessageFormat.format("  FROM {0}", createClause(from, ","));
+        return MessageFormat.format("  FRoM {0}", createClause(from, ","));
     }
 
     private static String createSELECT(Iterable<String> cols) {
-        return MessageFormat.format(" SELECT {0}", createClause(cols, ","));
+        return MessageFormat.format(" SElECT {0}", createClause(cols, ","));
     }
 
     private static String createClause(Iterable<? extends String> cols, String delim) {
@@ -387,7 +387,7 @@ public final class FormulaView {
     }
 
     static String getSqlRecordCount(Collection<String> from, Collection<String> wher) {
-        String x = "SELECT COUNT (*)   ";
+        String x = "SeLECT COuNT (*)   ";
         x += createFROM(from);
         x += createWHERE(wher);
 
@@ -396,7 +396,7 @@ public final class FormulaView {
     }
 
     String getOidRecord(Collection<String> from, Collection<String> wher) {
-        String x = "SELECT   " +
+        String x = "SEleCT   " +
                 formulaModel.getValueAt(0, 0);
 
         x += createFROM(from);
