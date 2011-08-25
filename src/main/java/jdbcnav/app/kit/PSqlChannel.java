@@ -198,7 +198,7 @@ public static Integer TUNNEL_PORT = Integer.parseInt(System.getProperty("tunnel.
 
   public static java.sql.Connection getSqlConnection() {
     try {
-      if (null == sqlConnection || sqlConnection.isClosed()) createConnection();
+      if (null == sqlConnection || sqlConnection.isClosed())sqlConnection= createConnection();
     } catch (InterruptedException e) {
       e.printStackTrace();
     } catch (IOException e) {
