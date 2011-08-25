@@ -39,14 +39,14 @@ public class TableMetaModel {
             ResultSet ik = metaData.getImportedKeys(null, null, tableName);
           dump(ik);
           ik = metaData.getImportedKeys(null, null, tableName);//rewind
-          ResultSet ob = metaData.getExportedKeys(null, null, null);
+          ResultSet ob = metaData.getExportedKeys(null, null, tableName);
 
           dump(ob);
-          ob = metaData.getExportedKeys(null, null, null);              //rewind
+          ob = metaData.getExportedKeys(null, null, tableName);              //rewind
 
           ResultSet primaryKeys = metaData.getPrimaryKeys(null, null, tableName);
           dump(primaryKeys);
-          ResultSet versionColumns = metaData.getVersionColumns(null, null, null);
+          ResultSet versionColumns = metaData.getVersionColumns(null, null, tableName);
           dump(versionColumns);
           ResultSet columns = metaData.getColumns(null, null, tableName, null);
           dump(columns);

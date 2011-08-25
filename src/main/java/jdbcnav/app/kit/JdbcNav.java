@@ -12,7 +12,6 @@ import java.io.*;
 import java.util.*;
 import java.util.logging.*;
 
-
 /**
  * (c) Copyright 2006  Glamdring Incorporated Enterprises, Inc.  All rights reserved.
 

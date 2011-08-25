@@ -24,6 +24,7 @@ import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.SCPClient;
 import ch.ethz.ssh2.Session;
 import ch.ethz.ssh2.StreamGobbler;
+import com.mysql.jdbc.MySQLConnection;
 import jdbcnav.app.kit.FileFilter.IdFileFilter;
 import jdbcnav.app.util.Pair;
 import virtuoso.jdbc4.Driver;
@@ -37,7 +38,8 @@ import virtuoso.jdbc4.Driver;
 public final class PSqlChannel {
 
 public static String  JDBC_DRIVER_PREFIX = System.getProperty("jdbc.prefix", System.getenv("JDBC_PREFIX"));  //env
-public static String DB_HOST = System.getProperty("db.host", System.getenv("DB_HOST"));                      //env
+  public static String DB_HOST = System.getProperty("db.host", System.getenv("DB_HOST"));                      //env
+  public static String DB_NAME= System.getProperty("db.name", System.getenv("DB_NAME"));                      //env
 public static String  DB_USER = System.getProperty("db.user", System.getenv("DB_USER"));                     //env
 public static String  DB_PASSWORD = System.getProperty("db.password", System.getenv("DB_PASSWORD"));         //env
 public static Integer DB_PORT = Integer.parseInt(System.getProperty("db.port", "DB_PORT"));
@@ -108,18 +110,28 @@ public static Integer TUNNEL_PORT = Integer.parseInt(System.getProperty("tunnel.
     Driver.main(new String[0]);
     String dbuser = DB_USER;
     String dbpassword = DB_PASSWORD;
-    setSqlConnection(DriverManager.getConnection(getDburi() + "/", dbuser, dbpassword));
+    try {
+      com.mysql.jdbc.Driver.class.newInstance();
+    } catch (InstantiationException e) {
+      e.printStackTrace();  //todo: verify for a purpose
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();  //todo: verify for a purpose
+    }
+    String url = getDburi()  ;
+    java.sql.Connection connection = DriverManager.getConnection(url, dbuser, dbpassword);
+    setSqlConnection(connection);
     Statement statement = sqlConnection.createStatement();
+
+    sqlConnection.setReadOnly(false);
+/*
     boolean execute = statement.execute("USE " + dbuser);
-
-
-    sqlConnection.setReadOnly(true);
+*/
 
     return sqlConnection;
   }
 
   public static String getDburi() {
-    String JDBC_PREFIX = JDBC_DRIVER_PREFIX;
+    String JDBC_PREFIX = JDBC_DRIVER_PREFIX+DB_HOST+"/"+DB_NAME;
     return JdbcNav.getArgs().length > 0 ? JdbcNav.getArgs()[0] : JDBC_PREFIX /*+ JDBC_HOST + ":" + JDBC_PORT + JDBC_LOCATION*/;
   }
 
