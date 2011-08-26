@@ -137,10 +137,15 @@
             <artifactId>virtjdbc4</artifactId>
             <version>1.0-2</version>
         </dependency>
-        <dependency>
+         <dependency>         <!--contains poi for .xls (I hope)-->
             <groupId>org.modeshape</groupId>
             <artifactId>modeshape-extractor-tika</artifactId>
             <version>2.5.0.Beta2</version>
+        </dependency>
+        <dependency>      <!--poi deps supplied previously from jnlp    -->
+            <groupId>org.jvnet.hudson</groupId>
+            <artifactId>netx</artifactId>
+            <version>0.5-hudson-2</version>
         </dependency>
         <!--     <dependency>
             <groupId>com.jcraft</groupId>
@@ -162,6 +167,8 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.14</version>
         </dependency>
+
+
     </dependencies>
     <build>
      <!--   <resources>

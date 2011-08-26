@@ -38,11 +38,11 @@ public class TableMetaModel {
             final DatabaseMetaData metaData = getSqlConnection().getMetaData();
             ResultSet ik = metaData.getImportedKeys(null, null, tableName);
           dump(ik);
-          ik = metaData.getImportedKeys(null, null, tableName);//rewind
-          ResultSet ob = metaData.getExportedKeys(null, null, tableName);
+          ik = metaData.getImportedKeys(null, null, "%");//rewind
+          ResultSet ob = metaData.getExportedKeys(null, null, "%");
 
           dump(ob);
-          ob = metaData.getExportedKeys(null, null, tableName);              //rewind
+          ob = metaData.getExportedKeys(null, null, "%");              //rewind
 
           ResultSet primaryKeys = metaData.getPrimaryKeys(null, null, tableName);
           dump(primaryKeys);

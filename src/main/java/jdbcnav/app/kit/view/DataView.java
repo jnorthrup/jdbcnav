@@ -16,6 +16,8 @@ import java.sql.Statement;
 import java.text.*;
 import java.util.*;
 
+import static javax.jnlp.ServiceManager.*;
+
 /**
  * (c) Copyright 2006  Glamdring Incorporated Enterprises, Inc.  All rights reserved.
   */
@@ -124,7 +126,7 @@ public final class DataView {
             fileWriter.flush();
             fileWriter.close();
             turl = tempFile.getAbsoluteFile().toURI().toURL();
-            javax.jnlp.BasicService svc = (javax.jnlp.BasicService) javax.jnlp.ServiceManager.lookup("javax.jnlp.BasicService");
+            BasicService svc = (BasicService) lookup("javax.jnlp.BasicService");
 
             svc.showDocument(turl);
         } catch (IOException e1) {
@@ -144,7 +146,8 @@ public final class DataView {
             fileWriter.write(tbod.toString());
             fileWriter.flush();
             fileWriter.close();
-            javax.jnlp.BasicService svc = (javax.jnlp.BasicService) javax.jnlp.ServiceManager.lookup("javax.jnlp.BasicService");
+
+            BasicService svc = (BasicService)  lookup("javax.jnlp.BasicService");
             svc.showDocument(tempFile.getAbsoluteFile().toURI().toURL());
         } catch (IOException e1) {
             e1.printStackTrace();  //is this informative enough?

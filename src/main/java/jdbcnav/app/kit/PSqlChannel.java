@@ -24,7 +24,6 @@ import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.SCPClient;
 import ch.ethz.ssh2.Session;
 import ch.ethz.ssh2.StreamGobbler;
-import com.mysql.jdbc.MySQLConnection;
 import jdbcnav.app.kit.FileFilter.IdFileFilter;
 import jdbcnav.app.util.Pair;
 import virtuoso.jdbc4.Driver;
@@ -37,25 +36,6 @@ import virtuoso.jdbc4.Driver;
  */
 public final class PSqlChannel {
 
-public static String  JDBC_DRIVER_PREFIX = System.getProperty("jdbc.prefix", System.getenv("JDBC_PREFIX"));  //env
-  public static String DB_HOST = System.getProperty("db.host", System.getenv("DB_HOST"));                      //env
-  public static String DB_NAME= System.getProperty("db.name", System.getenv("DB_NAME"));                      //env
-public static String  DB_USER = System.getProperty("db.user", System.getenv("DB_USER"));                     //env
-public static String  DB_PASSWORD = System.getProperty("db.password", System.getenv("DB_PASSWORD"));         //env
-public static Integer DB_PORT = Integer.parseInt(System.getProperty("db.port", "DB_PORT"));
-public static String  SSH_PASSWORD = System.getProperty("ssh.password", System.getenv("SSH_PASSWORD"));      //env
-public static String  SSH_USER = System.getProperty("ssh.user", System.getenv("USER"));                      //env
-public static String SSH_HOST = System.getProperty("ssh.host", System.getenv("SSH_HOST"));                 //env
-public static Integer TUNNEL_PORT = Integer.parseInt(System.getProperty("tunnel.port", "TUNNEL_PORT"));         //env
-// -Ddb.port=
-// -Ddb.host=
-// -Ddb.user=
-// -Ddb.password=
-// -Djdbc.prefix=
-// -Dtunnel.port=
-// -Dssh.host=
-// -Dssh.password=
-// -Dssh.user=
 
 
                                                                            
@@ -76,7 +56,7 @@ public static Integer TUNNEL_PORT = Integer.parseInt(System.getProperty("tunnel.
 
     System.out.println(System.getProperties());
     JLabel nameLabel = new JLabel(HTML_PROMPT_MSG);
-    String user = SSH_USER;
+    String user = JdbcNav.SSH_USER;
     JTextField nameField = new JTextField(user);
 //Group the radio buttons.
     JToolBar bbar = new JToolBar();
@@ -108,8 +88,8 @@ public static Integer TUNNEL_PORT = Integer.parseInt(System.getProperty("tunnel.
 
 //      setSqlConnection(JdbcNav.getDriver().connect(getDburi(), new Properties()));
     Driver.main(new String[0]);
-    String dbuser = DB_USER;
-    String dbpassword = DB_PASSWORD;
+    String dbuser = JdbcNav.DB_USER;
+    String dbpassword = JdbcNav.DB_PASSWORD;
     try {
       com.mysql.jdbc.Driver.class.newInstance();
     } catch (InstantiationException e) {
@@ -131,13 +111,13 @@ public static Integer TUNNEL_PORT = Integer.parseInt(System.getProperty("tunnel.
   }
 
   public static String getDburi() {
-    String JDBC_PREFIX = JDBC_DRIVER_PREFIX+DB_HOST+"/"+DB_NAME;
+    String JDBC_PREFIX = JdbcNav.JDBC_DRIVER_PREFIX+ JdbcNav.DB_HOST+"/"+ JdbcNav.DB_NAME;
     return JdbcNav.getArgs().length > 0 ? JdbcNav.getArgs()[0] : JDBC_PREFIX /*+ JDBC_HOST + ":" + JDBC_PORT + JDBC_LOCATION*/;
   }
 
   private static void sshTunnel(boolean hookMeUpDawg, File sshDir) throws IOException, InterruptedException {
     sshConnection.setTCPNoDelay(false);
-    sshConnection.createLocalPortForwarder(TUNNEL_PORT, DB_HOST, DB_PORT);
+    sshConnection.createLocalPortForwarder(JdbcNav.TUNNEL_PORT, JdbcNav.DB_HOST, JdbcNav.DB_PORT);
     Session session = sshConnection.openSession();
     new StreamGobbler(session.getStdout());
     new StreamGobbler(session.getStderr());
@@ -270,7 +250,7 @@ public static Integer TUNNEL_PORT = Integer.parseInt(System.getProperty("tunnel.
 
         Thread runJavaSsh;
         String[] strings;
-        strings = new String[]{"ssh", "-N", "-L" + DB_PORT + ":" + DB_HOST + ":" + TUNNEL_PORT + stuff.getFirst() + '@' + SSH_HOST};
+        strings = new String[]{"ssh", "-N", "-L" + JdbcNav.DB_PORT + ":" + JdbcNav.DB_HOST + ":" + JdbcNav.TUNNEL_PORT + stuff.getFirst() + '@' + JdbcNav.SSH_HOST};
         ProcessBuilder pb;
         pb = new ProcessBuilder(strings);
 
@@ -345,8 +325,8 @@ public static Integer TUNNEL_PORT = Integer.parseInt(System.getProperty("tunnel.
             auth = true;
 
           default:
-            DB_PORT = TUNNEL_PORT;
-            DB_HOST = "tron.app.com";
+            JdbcNav.DB_PORT = JdbcNav.TUNNEL_PORT;
+            JdbcNav.DB_HOST = "tron.app.com";
             break;
         }
 
@@ -382,7 +362,7 @@ public static Integer TUNNEL_PORT = Integer.parseInt(System.getProperty("tunnel.
       if (!sshDir.mkdirs()) new Error("couldn't create $HOME/.ssh and you don't have one!!");
       JOptionPane.showMessageDialog(null, new JLabel("<html><b>Hookin you up dawg!<p>we have created " + sshDir.getAbsolutePath()));
     }
-    sshConnection = new Connection(SSH_HOST);
+    sshConnection = new Connection(JdbcNav.SSH_HOST);
     try {
       sshConnection.connect();
     } catch (IOException e) {

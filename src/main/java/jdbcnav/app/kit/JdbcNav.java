@@ -14,15 +14,32 @@ import java.util.logging.*;
 
 /**
  * (c) Copyright 2006  Glamdring Incorporated Enterprises, Inc.  All rights reserved.
-
+ * -Ddb.port=
+ * -Ddb.host=
+ * -Ddb.user=
+ * -Ddb.password=
+ * -Djdbc.prefix=
+ * -Dtunnel.port=
+ * -Dssh.host=
+ * -Dssh.password=
+ * -Dssh.user=
  */
 public final class JdbcNav {
     private static String[] args;
     private static final boolean running = true;
 
     private static Logger logger = Logger.getAnonymousLogger();
+  public static String  JDBC_DRIVER_PREFIX = System.getProperty("jdbc.prefix", System.getenv("JDBC_PREFIX"));  //env
+  public static String DB_HOST = System.getProperty("db.host", System.getenv("DB_HOST"));                      //env
+  public static String DB_NAME= System.getProperty("db.name", System.getenv("DB_NAME"));                      //env
+  public static String  DB_USER = System.getProperty("db.user", System.getenv("DB_USER"));                     //env
+  public static String  DB_PASSWORD = System.getProperty("db.password", System.getenv("DB_PASSWORD"));         //env
+  public static Integer DB_PORT = Integer.parseInt(System.getProperty("db.port", "DB_PORT"));
+   public static String  SSH_USER = System.getProperty("ssh.user", System.getenv("USER"));                      //env
+  public static String SSH_HOST = System.getProperty("ssh.host", System.getenv("SSH_HOST"));                 //env
+  public static Integer TUNNEL_PORT = Integer.parseInt(System.getProperty("tunnel.port", "TUNNEL_PORT"));         //env
 
-    public static DefaultTableModel getFormulaModel() {
+  public static DefaultTableModel getFormulaModel() {
         return (DefaultTableModel) getFormView().getTable().getModel();
     }
 
@@ -130,8 +147,8 @@ public final class JdbcNav {
             public void actionPerformed(ActionEvent actionEvent) {
                 JInternalFrame iframe = new JInternalFrame();
                 try {
-                  String dbcat = null;
-                  String dbuser = null;
+                  String dbcat = DB_NAME;
+                  String dbuser = DB_USER;
                   MetaTreeView.createInstanceView(iframe, desktop, dbcat, dbuser);
                 } catch (Exception e1) {
                     e1.printStackTrace();
